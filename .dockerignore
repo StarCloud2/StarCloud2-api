@@ -1,0 +1,10 @@
+internal/*
+
+# ignore .git and .cache folders
+.git
+.gitignore
+.idea
+.cache
+LICENSE
+README.md
+Makefile
