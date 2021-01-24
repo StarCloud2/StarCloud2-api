@@ -1,35 +1,45 @@
 version: "3.7"
 services:
   db:
-    image: postgres:latest
+    image: mysql:5.7
     restart: always
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: toor
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: users_db
+      MYSQL_ROOT_PASSWORD: toor
       PGDATA: /var/lib/postgresql/data
     volumes:
-    - ./internal/postgresql-db:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+      - ./internal/mysql-db:/var/lib/mysql
+    networks:
+      - starnet
 
-  pgadmin:
-    image: dpage/pgadmin4:latest
+    # phpmyadmin
+  phpmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin/phpmyadmin
     restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: root@toor.ch
-      PGADMIN_DEFAULT_PASSWORD: toor
-      PGADMIN_LISTEN_PORT: 80
     ports:
-      - "8080:80"
-    volumes:
-    - ./internal/pgadmin-data:/var/lib/pgadmin
-    links:
-      - "db:pgsql-server"
+      - '8080:80'
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: toor
+    networks:
+      - starnet
 
   starcloud-api:
     build: .
+    depends_on:
+      - phpmyadmin
     ports:
-    - "8090:8080"
+      - "8090:8080"
+    links:
+      - "db:database"
+    networks:
+      - starnet
+
+networks:
+  starnet:
 
 
