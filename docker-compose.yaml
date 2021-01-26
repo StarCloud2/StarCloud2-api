@@ -14,7 +14,18 @@ services:
     networks:
       - starnet
 
-    # phpmyadmin
+  starcloud-api:
+    build: .
+    depends_on:
+      - phpmyadmin
+    ports:
+      - "8090:8080"
+    links:
+      - "db:database"
+    networks:
+      - starnet
+
+  # phpmyadmin
   phpmyadmin:
     depends_on:
       - db
@@ -28,16 +39,29 @@ services:
     networks:
       - starnet
 
-  starcloud-api:
-    build: .
-    depends_on:
-      - phpmyadmin
+  # Prometheus
+  prometheus:
+    build: ./deployments/prometheus
     ports:
-      - "8090:8080"
-    links:
-      - "db:database"
+    - "9090:9090"
     networks:
       - starnet
+    depends_on:
+      - starcloud-api
+
+  # Grafana
+  grafana:
+    build: ./deployments/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./internal/grafana-data:/var/lib/grafana
+    networks:
+      - starnet
+    depends_on:
+      - prometheus
+
+
 
 networks:
   starnet:

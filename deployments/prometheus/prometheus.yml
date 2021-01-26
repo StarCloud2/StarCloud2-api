@@ -1,0 +1,10 @@
+global:
+  scrape_interval:     5s
+  external_labels:
+    monitor: 'starcloud-api'
+
+scrape_configs:
+  - job_name: 'starcloud'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['starcloud-api:8080']

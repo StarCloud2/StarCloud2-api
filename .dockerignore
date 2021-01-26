@@ -8,3 +8,4 @@ internal/*
 LICENSE
 README.md
 Makefile
+/deployments/
