@@ -8,7 +8,6 @@ services:
       MYSQL_PASSWORD: admin
       MYSQL_DATABASE: users_db
       MYSQL_ROOT_PASSWORD: toor
-      PGDATA: /var/lib/postgresql/data
     volumes:
       - ./internal/mysql-db:/var/lib/mysql
     networks:
